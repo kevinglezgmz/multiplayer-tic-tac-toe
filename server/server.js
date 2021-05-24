@@ -66,12 +66,12 @@ io.on("connection", (socket) => {
     gameState.cells[clickedCellIndex] = gameState.nextVal;
     gameState.nextVal = gameState.nextVal === "X" ? "O" : "X";
     io.to(roomName).emit("game-update", JSON.stringify(gameState), gameState.nextVal === "X" ? 1 : 2);
-    const { winner, winningLine } = hasPlayerWon(gameState);
+    const winner = hasPlayerWon(gameState);
     if (winner) {
       if (winner === "T") {
-        io.to(roomName).emit("game-end", "Tie!", winningLine);
+        io.to(roomName).emit("game-end", "Tie!");
       } else {
-        io.to(roomName).emit("game-end", winner + " has won!", winningLine);
+        io.to(roomName).emit("game-end", winner + " has won!");
       }
     }
   }
