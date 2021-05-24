@@ -7,8 +7,9 @@ const btnJoinGame = document.getElementById("btnJoinGame");
 const inputGameCode = document.getElementById("inputGameCode");
 const landingContainer = document.querySelector(".landingContainer");
 const cellContainer = document.querySelector(".cellContainer");
+const winningBar = document.querySelector(".winningBar");
 
-const socket = io("https://tic-server.herokuapp.com/");
+const socket = io("http://localhost:5000/");
 
 let player;
 
@@ -20,8 +21,7 @@ socket.on("too-many-players", handleTooManyPlayers);
 socket.on("game-code", handleGameCode);
 
 function handleGameCode(gameCode) {
-  lblGameCode.innerText = "Game code: " + gameCode + ".";
-  lblGameCode.style.display = "block";
+  inputGameCode.value = gameCode;
   loader.style.display = "block";
   lblGameStatus.innerText = "Waiting for a second player to join.";
 }
@@ -44,6 +44,16 @@ function handleGameInit(playerNumber) {
 
   cellContainer.style.display = "grid";
   landingContainer.style.display = "none";
+  lblGameCode.innerText = "Game code: " + inputGameCode.value + ".";
+  lblGameCode.style.display = "block";
+
+  window.location.hash = "#lets_play";
+
+  setInterval(function () {
+    if (window.location.hash !== "#lets_play") {
+      location.reload();
+    }
+  }, 100);
 }
 
 function handleCellClick(e) {
@@ -72,20 +82,65 @@ function handleGameUpdate(gameState, playerNumber) {
   loader.style.display = "none";
 }
 
-function handleGameEnd(message) {
-  alert(message);
+function handleGameEnd(message, winningLine) {
   cells.forEach((cell) => {
     cell.removeEventListener("click", handleCellClick);
     cell.classList.add("clicked");
   });
+
+  if (winningLine[0] === "d") {
+    winningBar.style.setProperty("--rotation-winning-bar", winningLine[1] === "1" ? "-45deg" : "45deg");
+    winningBar.style.setProperty("--top-winning-bar", "-19%");
+    winningBar.style.setProperty("--left-winning-bar", "50%");
+    winningBar.style.setProperty("--width-winning-bar", "2%");
+    winningBar.style.setProperty("--height-winning-bar", "138%");
+  } else if (winningLine[0] === "h") {
+    winningBar.style.setProperty("--left-winning-bar", "0");
+    winningBar.style.setProperty(
+      "--top-winning-bar",
+      "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1% " + getPixelAdjustment(winningLine) + ")"
+    );
+    winningBar.style.setProperty("--width-winning-bar", "100%");
+    winningBar.style.setProperty("--height-winning-bar", "2%");
+  } else if (winningLine[0] === "v") {
+    winningBar.style.setProperty("--top-winning-bar", "0%");
+    winningBar.style.setProperty(
+      "--left-winning-bar",
+      "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1% " + getPixelAdjustment(winningLine) + ")"
+    );
+    winningBar.style.setProperty("--width-winning-bar", "2%");
+    winningBar.style.setProperty("--height-winning-bar", "100%");
+  }
+
+  winningBar.style.display = "block";
+  winningBar.classList.add("winningBarAnimation");
+}
+
+function getDisplacementFactor(winningLine) {
+  if (winningLine[1] === "1") {
+    return "1";
+  } else if (winningLine[1] === "2") {
+    return "3";
+  } else {
+    return "5";
+  }
+}
+
+function getPixelAdjustment(winningLine) {
+  if (winningLine[1] === "1") {
+    return "- 3px";
+  } else if (winningLine[1] === "2") {
+    return "";
+  } else {
+    return "+ 3px";
+  }
 }
 
 btnCreateGame.addEventListener("click", (e) => {
+  inputGameCode.value = "";
   socket.emit("create-new-game");
 });
 
 btnJoinGame.addEventListener("click", (e) => {
   socket.emit("join-game", inputGameCode.value);
-  lblGameCode.innerText = "Game code: " + inputGameCode.value + ".";
-  lblGameCode.style.display = "block";
 });

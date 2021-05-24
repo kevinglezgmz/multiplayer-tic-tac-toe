@@ -9,7 +9,6 @@
       h1 {
         text-align: center;
         font-size: 3.5rem;
-        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
         margin-inline-end: 0.35em;
         margin-inline-start: 0.35em;
       }
@@ -17,15 +16,12 @@
       .infoLabel {
         text-align: center;
         font-size: 1.5rem;
-        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
-        margin-block-start: 0;
-        margin-block-end: 2rem;
-        margin-inline-end: 0.35em;
-        margin-inline-start: 0.35em;
+        margin: 0 0.35rem 1rem 0.35rem;
         box-sizing: content-box;
       }
 
       body {
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
         height: 100vh;
         margin: 0px;
         background: #dddddd;
@@ -34,12 +30,35 @@
       }
 
       .cellContainer {
-        display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: repeat(3, 1fr);
         width: 70vh;
         height: 70vh;
         margin: 2rem auto 0 auto;
+        position: relative;
+      }
+
+      .winningBar {
+        position: absolute;
+        background: rgb(253, 243, 243);
+        left: var(--left-winning-bar, 100%);
+        top: var(--top-winning-bar, 100%);
+        width: var(--width-winning-bar, 100%);
+        height: var(--height-winning-bar, 100%);
+        transform: rotate(var(--rotation-winning-bar, 0));
+      }
+
+      .winningBarAnimation {
+        animation: animateWinningBar 1s ease-out;
+      }
+
+      @keyframes animateWinningBar {
+        from {
+          transform: scale(0);
+        }
+        to {
+          transform: scale(1) rotate(var(--rotation-winning-bar, 0));
+        }
       }
 
       .landingContainer {
@@ -53,7 +72,6 @@
         justify-content: center;
         cursor: pointer;
         font-size: 10.5rem;
-        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
       }
 
       .clicked {
@@ -67,7 +85,6 @@
         border: none;
         font-size: 1.1rem;
         padding: 0.5em 0.9em;
-        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
       }
 
       label {
@@ -142,7 +159,7 @@
         border: 0.2em solid #cccccc;
         box-sizing: border-box;
         font-size: 1.1rem;
-        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+        font-family: inherit;
         cursor: pointer;
         background-color: #cccccc;
         text-align: center;
@@ -170,7 +187,6 @@
         -webkit-animation: spin 1.5s linear infinite; /* Safari */
         animation: spin 1.5s linear infinite;
         display: none;
-        /* margin: 0.5em; */
         box-sizing: border-box;
       }
 
@@ -217,6 +233,7 @@
       <div class="cell"></div>
       <div class="cell"></div>
       <div class="cell"></div>
+      <div class="winningBar" style="display: none"></div>
     </div>
 
     <script
