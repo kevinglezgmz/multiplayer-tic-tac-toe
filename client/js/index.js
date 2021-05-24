@@ -9,7 +9,7 @@ const landingContainer = document.querySelector(".landingContainer");
 const cellContainer = document.querySelector(".cellContainer");
 const winningBar = document.querySelector(".winningBar");
 
-const socket = io("http://localhost:5000/");
+const socket = io("https://tic-server.herokuapp.com/");
 
 let player;
 
