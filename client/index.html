@@ -101,6 +101,59 @@
         border: 6px solid #6d6d6d;
       }
 
+      .overlay {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        transition: opacity 500ms;
+        visibility: hidden;
+        opacity: 0;
+      }
+
+      .overlay[data-target="true"] {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .popup {
+        margin: 30vh auto;
+        padding: 20px;
+        background: #fff;
+        width: 50%;
+        position: relative;
+        transition: all 1s ease-in-out;
+        box-shadow: 0px 0px 1px 1px rgba(26, 26, 26, 0.89);
+      }
+
+      .popup h2 {
+        margin-top: 0;
+      }
+
+      .popup .close {
+        background: none;
+        border: none;
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        transition: all 200ms;
+        font-size: 2rem;
+        font-weight: bold;
+        padding: 0;
+      }
+
+      .popup .close:hover {
+        color: #fa3939;
+      }
+
+      .popup .content {
+        max-height: 30%;
+        overflow: auto;
+        font-size: 1.2rem;
+      }
+
       @media (max-width: 766px) {
         .landingContainer {
           width: 90vw;
@@ -113,6 +166,10 @@
 
         .cell {
           font-size: 7rem;
+        }
+
+        .popup {
+          width: 80vw;
         }
       }
 
@@ -164,9 +221,11 @@
         background-color: #cccccc;
         text-align: center;
       }
+
       .btn:hover {
         border-color: #7a7a7a;
       }
+
       .btn:active {
         background-color: #999999;
       }
@@ -234,6 +293,18 @@
       <div class="cell"></div>
       <div class="cell"></div>
       <div class="winningBar" style="display: none"></div>
+    </div>
+
+    <div id="gameEndPopup" class="overlay" data-target="false">
+      <div class="popup">
+        <h2>Game over!</h2>
+        <button class="close" onclick="closePopup()">&times;</button>
+        <div id="popupContent" class="content">You lose! Better luck next time!</div>
+        <div id="popupFooter" class="popup-footer">
+          <button id="btnHome" class="btn" onclick="location.reload()">Go home</button>
+          <button id="btnRematch" class="btn">Rematch!</button>
+        </div>
+      </div>
     </div>
 
     <script

@@ -25,6 +25,19 @@ io.on("connection", (socket) => {
   socket.on("clicked-cell", handleClickedCell);
   socket.on("create-new-game", handleCreateNewGame);
   socket.on("join-game", handleJoinGame);
+  socket.on("request-rematch", handleRequestRematch);
+  socket.on("accept-rematch", handleAcceptRematch);
+
+  function handleAcceptRematch() {
+    const roomName = clientRooms[socket.id];
+    globalState[roomName] = createGameState();
+    io.to(roomName).emit("rematch-accepted");
+    io.to(roomName).emit("game-update", JSON.stringify(globalState[roomName]), 1);
+  }
+
+  function handleRequestRematch(roomName) {
+    socket.to(roomName).emit("rematch-request");
+  }
 
   function handleCreateNewGame() {
     let roomName = makeid(5);
@@ -68,11 +81,7 @@ io.on("connection", (socket) => {
     io.to(roomName).emit("game-update", JSON.stringify(gameState), gameState.nextVal === "X" ? 1 : 2);
     const { winner, winningLine } = hasPlayerWon(gameState);
     if (winner) {
-      if (winner === "T") {
-        io.to(roomName).emit("game-end", "Tie!", winningLine);
-      } else {
-        io.to(roomName).emit("game-end", winner + " has won!", winningLine);
-      }
+      io.to(roomName).emit("game-end", winner, winningLine);
     }
   }
 });
