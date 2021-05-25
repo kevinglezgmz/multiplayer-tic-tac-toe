@@ -8,8 +8,11 @@ const inputGameCode = document.getElementById("inputGameCode");
 const landingContainer = document.querySelector(".landingContainer");
 const cellContainer = document.querySelector(".cellContainer");
 const winningBar = document.querySelector(".winningBar");
+const popupContent = document.getElementById("popupContent");
+const popup = document.getElementById("gameEndPopup");
+const btnRematch = document.getElementById("btnRematch");
 
-const socket = io("https://tic-server.herokuapp.com/");
+const socket = io("http://localhost:5000/");
 
 let player;
 
@@ -19,6 +22,8 @@ socket.on("game-end", handleGameEnd);
 socket.on("unknown-code", handleUnknownCode);
 socket.on("too-many-players", handleTooManyPlayers);
 socket.on("game-code", handleGameCode);
+socket.on("rematch-request", handleRematchRequest);
+socket.on("rematch-accepted", handleRematchAccepted);
 
 function handleGameCode(gameCode) {
   inputGameCode.value = gameCode;
@@ -82,38 +87,54 @@ function handleGameUpdate(gameState, playerNumber) {
   loader.style.display = "none";
 }
 
-function handleGameEnd(message, winningLine) {
+function handleGameEnd(winner, winningLine) {
   cells.forEach((cell) => {
     cell.removeEventListener("click", handleCellClick);
     cell.classList.add("clicked");
   });
 
+  // default winning line is horizontal
+  let [rotationBarVar, rotationBarVal] = ["--rotation-winning-bar", "0"];
+  let [topBarVar, topBarVal] = [
+    "--top-winning-bar",
+    "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1% " + getPixelAdjustment(winningLine) + ")",
+  ];
+  let [leftBarVar, leftBarVal] = ["--left-winning-bar", "0"];
+  let [widthBarVar, widthBarVal] = ["--width-winning-bar", "100%"];
+  let [heightBarVar, heightBarVal] = ["--height-winning-bar", "2%"];
+
   if (winningLine[0] === "d") {
-    winningBar.style.setProperty("--rotation-winning-bar", winningLine[1] === "1" ? "-45deg" : "45deg");
-    winningBar.style.setProperty("--top-winning-bar", "-19%");
-    winningBar.style.setProperty("--left-winning-bar", "50%");
-    winningBar.style.setProperty("--width-winning-bar", "2%");
-    winningBar.style.setProperty("--height-winning-bar", "138%");
-  } else if (winningLine[0] === "h") {
-    winningBar.style.setProperty("--left-winning-bar", "0");
-    winningBar.style.setProperty(
-      "--top-winning-bar",
-      "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1% " + getPixelAdjustment(winningLine) + ")"
-    );
-    winningBar.style.setProperty("--width-winning-bar", "100%");
-    winningBar.style.setProperty("--height-winning-bar", "2%");
+    rotationBarVal = winningLine[1] === "1" ? "-45deg" : "45deg";
+    topBarVal = "-19%";
+    leftBarVal = "50%";
+    widthBarVal = "2%";
+    heightBarVal = "138%";
   } else if (winningLine[0] === "v") {
-    winningBar.style.setProperty("--top-winning-bar", "0%");
-    winningBar.style.setProperty(
-      "--left-winning-bar",
-      "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1% " + getPixelAdjustment(winningLine) + ")"
-    );
-    winningBar.style.setProperty("--width-winning-bar", "2%");
-    winningBar.style.setProperty("--height-winning-bar", "100%");
+    topBarVal = "0";
+    leftBarVal = "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1% " + getPixelAdjustment(winningLine) + ")";
+    widthBarVal = "2%";
+    heightBarVal = "100%";
   }
+
+  winningBar.style.setProperty(rotationBarVar, rotationBarVal);
+  winningBar.style.setProperty(topBarVar, topBarVal);
+  winningBar.style.setProperty(leftBarVar, leftBarVal);
+  winningBar.style.setProperty(widthBarVar, widthBarVal);
+  winningBar.style.setProperty(heightBarVar, heightBarVal);
 
   winningBar.style.display = "block";
   winningBar.classList.add("winningBarAnimation");
+
+  if (winner === "T") {
+    popupContent.innerText = "There has been a tie!";
+  } else if ((player === 1 && winner === "X") || (player === 2 && winner === "O")) {
+    popupContent.innerText = "Congratulations! You won!";
+  } else {
+    popupContent.innerText = "You lose! Better luck next time!";
+  }
+
+  btnRematch.addEventListener("click", handleRematchBtn);
+  openPopup();
 }
 
 function getDisplacementFactor(winningLine) {
@@ -134,6 +155,35 @@ function getPixelAdjustment(winningLine) {
   } else {
     return "+ 3px";
   }
+}
+
+function openPopup() {
+  popup.setAttribute("data-target", "true");
+}
+
+function closePopup() {
+  popup.setAttribute("data-target", "false");
+}
+
+function handleRematchAccepted() {
+  closePopup();
+  winningBar.style.display = "none";
+  winningBar.classList.remove("winningBarAnimation");
+}
+
+function handleRematchBtn(e) {
+  socket.emit("request-rematch", inputGameCode.value);
+}
+
+function handleRematchRequest() {
+  popupContent.innerText = "Your opponent wants to play again. Press rematch to accept.";
+  btnRematch.removeEventListener("click", handleRematchBtn);
+  btnRematch.addEventListener("click", handleAcceptRematchBtn);
+}
+
+function handleAcceptRematchBtn(e) {
+  btnRematch.removeEventListener("click", handleAcceptRematchBtn);
+  socket.emit("accept-rematch");
 }
 
 btnCreateGame.addEventListener("click", (e) => {
