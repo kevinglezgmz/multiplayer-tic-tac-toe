@@ -54,9 +54,10 @@ function handleGameInit(playerNumber) {
 
   window.location.hash = "#lets_play";
 
-  setInterval(function () {
+  const backInterval = setInterval(function () {
     if (window.location.hash !== "#lets_play") {
       location.reload();
+      clearInterval(backInterval);
     }
   }, 100);
 }
