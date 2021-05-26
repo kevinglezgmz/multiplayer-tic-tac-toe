@@ -103,23 +103,20 @@ function handleGameEnd(winner, winningLine) {
 
   // default winning line is horizontal
   let [rotationBarVar, rotationBarVal] = ["--rotation-winning-bar", "0"];
-  let [topBarVar, topBarVal] = [
-    "--top-winning-bar",
-    "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1% " + getPixelAdjustment(winningLine) + ")",
-  ];
+  let [topBarVar, topBarVal] = ["--top-winning-bar", "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1% " + ")"];
   let [leftBarVar, leftBarVal] = ["--left-winning-bar", "0"];
   let [widthBarVar, widthBarVal] = ["--width-winning-bar", "100%"];
   let [heightBarVar, heightBarVal] = ["--height-winning-bar", "2%"];
 
   if (winningLine[0] === "d") {
     rotationBarVal = winningLine[1] === "1" ? "-45deg" : "45deg";
-    topBarVal = "-19%";
+    topBarVal = winningLine[1] === "1" ? "-18.3%" : "-19.8%";
     leftBarVal = "50%";
     widthBarVal = "2%";
     heightBarVal = "138%";
   } else if (winningLine[0] === "v") {
     topBarVal = "0";
-    leftBarVal = "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1% " + getPixelAdjustment(winningLine) + ")";
+    leftBarVal = "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1%" + ")";
     widthBarVal = "2%";
     heightBarVal = "100%";
   }
@@ -152,16 +149,6 @@ function getDisplacementFactor(winningLine) {
     return "3";
   } else {
     return "5";
-  }
-}
-
-function getPixelAdjustment(winningLine) {
-  if (winningLine[1] === "1") {
-    return "- 3px";
-  } else if (winningLine[1] === "2") {
-    return "";
-  } else {
-    return "+ 3px";
   }
 }
 
