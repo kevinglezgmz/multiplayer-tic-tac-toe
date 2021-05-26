@@ -258,3 +258,9 @@ input {
     transform: rotate(360deg);
   }
 }
+
+img.game-icon {
+  display: none;
+  width: 80%;
+  height: 80%;
+}
