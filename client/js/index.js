@@ -101,41 +101,46 @@ function handleGameEnd(winner, winningLine) {
     cell.classList.add("clicked");
   });
 
-  // default winning line is horizontal
-  let [rotationBarVar, rotationBarVal] = ["--rotation-winning-bar", "0"];
-  let [topBarVar, topBarVal] = ["--top-winning-bar", "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1% " + ")"];
-  let [leftBarVar, leftBarVal] = ["--left-winning-bar", "0"];
-  let [widthBarVar, widthBarVal] = ["--width-winning-bar", "100%"];
-  let [heightBarVar, heightBarVal] = ["--height-winning-bar", "2%"];
-
-  if (winningLine[0] === "d") {
-    rotationBarVal = winningLine[1] === "1" ? "-45deg" : "45deg";
-    topBarVal = winningLine[1] === "1" ? "-18.3%" : "-19.8%";
-    leftBarVal = "50%";
-    widthBarVal = "2%";
-    heightBarVal = "138%";
-  } else if (winningLine[0] === "v") {
-    topBarVal = "0";
-    leftBarVal = "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1%" + ")";
-    widthBarVal = "2%";
-    heightBarVal = "100%";
-  }
-
-  winningBar.style.setProperty(rotationBarVar, rotationBarVal);
-  winningBar.style.setProperty(topBarVar, topBarVal);
-  winningBar.style.setProperty(leftBarVar, leftBarVal);
-  winningBar.style.setProperty(widthBarVar, widthBarVal);
-  winningBar.style.setProperty(heightBarVar, heightBarVal);
-
-  winningBar.style.display = "block";
-  winningBar.classList.add("winningBarAnimation");
-
   if (winner === "T") {
     popupContent.innerText = "There has been a tie!";
   } else if ((player === 1 && winner === "X") || (player === 2 && winner === "O")) {
     popupContent.innerText = "Congratulations! You won!";
   } else {
     popupContent.innerText = "You lose! Better luck next time!";
+  }
+
+  // default winning line is horizontal
+  if (winningLine) {
+    let [rotationBarVar, rotationBarVal] = ["--rotation-winning-bar", "0"];
+    let [topBarVar, topBarVal] = [
+      "--top-winning-bar",
+      "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1% " + ")",
+    ];
+    let [leftBarVar, leftBarVal] = ["--left-winning-bar", "0"];
+    let [widthBarVar, widthBarVal] = ["--width-winning-bar", "100%"];
+    let [heightBarVar, heightBarVal] = ["--height-winning-bar", "2%"];
+
+    if (winningLine[0] === "d") {
+      rotationBarVal = winningLine[1] === "1" ? "-45deg" : "45deg";
+      topBarVal = winningLine[1] === "1" ? "-18.3%" : "-19.8%";
+      leftBarVal = "50%";
+      widthBarVal = "2%";
+      heightBarVal = "138%";
+    } else if (winningLine[0] === "v") {
+      topBarVal = "0";
+      leftBarVal = "calc(16.67% * " + getDisplacementFactor(winningLine) + " - 1%" + ")";
+      widthBarVal = "2%";
+      heightBarVal = "100%";
+    }
+
+    winningBar.style.setProperty(rotationBarVar, rotationBarVal);
+    winningBar.style.setProperty(topBarVar, topBarVal);
+    winningBar.style.setProperty(leftBarVar, leftBarVal);
+    winningBar.style.setProperty(widthBarVar, widthBarVal);
+    winningBar.style.setProperty(heightBarVar, heightBarVal);
+
+    winningBar.style.display = "block";
+    winningBar.classList.add("winningBarAnimation");
   }
 
   btnRematch.addEventListener("click", handleRematchBtn);
