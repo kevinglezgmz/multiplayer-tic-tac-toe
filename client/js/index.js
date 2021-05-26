@@ -71,7 +71,14 @@ function handleCellClick(e) {
 function handleGameUpdate(gameState, playerNumber) {
   gameState = JSON.parse(gameState);
   for (let i = 0; i < cells.length; i++) {
-    cells[i].innerText = gameState.cells[i];
+    if (gameState.cells[i] !== "") {
+      const iconIndex = gameState.cells[i] === "X" ? 1 : 0;
+      cells[i].children[iconIndex].style.display = "block";
+    } else {
+      cells[i].children[0].style.display = "none";
+      cells[i].children[1].style.display = "none";
+    }
+
     if (gameState.cells[i] !== "" || player != playerNumber) {
       cells[i].classList.add("clicked");
       cells[i].removeEventListener("click", handleCellClick);
