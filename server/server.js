@@ -27,6 +27,18 @@ io.on("connection", (socket) => {
   socket.on("join-game", handleJoinGame);
   socket.on("request-rematch", handleRequestRematch);
   socket.on("accept-rematch", handleAcceptRematch);
+  socket.on("disconnect", handleDisconnect);
+
+  function handleDisconnect() {
+    const roomName = clientRooms[socket.id];
+    if (roomName) {
+      socket.to(roomName).emit("player-disconnected");
+      delete clientRooms[socket.id];
+      if (Object.keys(clientRooms).filter((id) => clientRooms[id] === roomName).length === 0) {
+        delete globalState[roomName];
+      }
+    }
+  }
 
   function handleAcceptRematch() {
     const roomName = clientRooms[socket.id];
