@@ -77,10 +77,10 @@ function handleGameUpdate(gameState, playerNumber) {
   for (let i = 0; i < cells.length; i++) {
     if (gameState.cells[i] !== "") {
       const iconIndex = gameState.cells[i] === "X" ? 1 : 0;
-      cells[i].children[iconIndex].style.display = "block";
+      cells[i].children[iconIndex].classList.add("visible-icon");
     } else {
-      cells[i].children[0].style.display = "none";
-      cells[i].children[1].style.display = "none";
+      cells[i].children[0].classList.remove("visible-icon");
+      cells[i].children[1].classList.remove("visible-icon");
     }
 
     if (gameState.cells[i] !== "" || player != playerNumber) {
