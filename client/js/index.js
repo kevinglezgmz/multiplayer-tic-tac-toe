@@ -13,7 +13,7 @@ const gameEndPopup = document.getElementById("gameEndPopup");
 const disconnectPopup = document.getElementById("disconnectPopup");
 const btnRematch = document.getElementById("btnRematch");
 
-const socket = io("http://localhost:5000/");
+const socket = io("https://tic-server.herokuapp.com/");
 
 let player;
 let gameStatus;
