@@ -9,12 +9,14 @@ const landingContainer = document.querySelector(".landingContainer");
 const cellContainer = document.querySelector(".cellContainer");
 const winningBar = document.querySelector(".winningBar");
 const popupContent = document.getElementById("popupContent");
-const popup = document.getElementById("gameEndPopup");
+const gameEndPopup = document.getElementById("gameEndPopup");
+const disconnectPopup = document.getElementById("disconnectPopup");
 const btnRematch = document.getElementById("btnRematch");
 
-const socket = io("https://tic-server.herokuapp.com/");
+const socket = io("http://localhost:5000/");
 
 let player;
+let gameStatus;
 
 socket.on("game-init", handleGameInit);
 socket.on("game-update", handleGameUpdate);
@@ -24,6 +26,7 @@ socket.on("too-many-players", handleTooManyPlayers);
 socket.on("game-code", handleGameCode);
 socket.on("rematch-request", handleRematchRequest);
 socket.on("rematch-accepted", handleRematchAccepted);
+socket.on("player-disconnected", handlePlayerDisconnect);
 
 function handleGameCode(gameCode) {
   inputGameCode.value = gameCode;
@@ -69,6 +72,7 @@ function handleCellClick(e) {
 }
 
 function handleGameUpdate(gameState, playerNumber) {
+  gameStatus = "running";
   gameState = JSON.parse(gameState);
   for (let i = 0; i < cells.length; i++) {
     if (gameState.cells[i] !== "") {
@@ -96,6 +100,8 @@ function handleGameUpdate(gameState, playerNumber) {
 }
 
 function handleGameEnd(winner, winningLine) {
+  gameStatus = "ended";
+
   cells.forEach((cell) => {
     cell.removeEventListener("click", handleCellClick);
     cell.classList.add("clicked");
@@ -143,6 +149,7 @@ function handleGameEnd(winner, winningLine) {
     winningBar.classList.add("winningBarAnimation");
   }
 
+  btnRematch.style.display = "block";
   btnRematch.addEventListener("click", handleRematchBtn);
   openPopup();
 }
@@ -158,11 +165,11 @@ function getDisplacementFactor(winningLine) {
 }
 
 function openPopup() {
-  popup.setAttribute("data-target", "true");
+  gameEndPopup.setAttribute("data-target", "true");
 }
 
 function closePopup() {
-  popup.setAttribute("data-target", "false");
+  gameEndPopup.setAttribute("data-target", "false");
 }
 
 function handleRematchAccepted() {
@@ -184,6 +191,17 @@ function handleRematchRequest() {
 function handleAcceptRematchBtn(e) {
   btnRematch.removeEventListener("click", handleAcceptRematchBtn);
   socket.emit("accept-rematch");
+}
+
+function handlePlayerDisconnect() {
+  if (gameStatus === "running") {
+    disconnectPopup.setAttribute("data-target", "true");
+  } else if (gameStatus === "ended") {
+    gameEndPopup.setAttribute("data-target", "true");
+    popupContent.innerText += " - Your opponent left, please go home.";
+    btnRematch.setAttribute("disabled", "true");
+    btnRematch.innerText = "Rematch not available";
+  }
 }
 
 btnCreateGame.addEventListener("click", (e) => {
