@@ -88,6 +88,10 @@ input {
   width: 100%;
 }
 
+#inputGameCode {
+  max-width: fit-content;
+}
+
 .cell:nth-of-type(n) {
   border: 6px solid #6d6d6d;
 }
@@ -220,6 +224,7 @@ input {
 
 .inputGroup {
   display: flex;
+  justify-content: center;
   white-space: nowrap;
 }
 
