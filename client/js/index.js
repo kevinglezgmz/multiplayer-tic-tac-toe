@@ -52,7 +52,30 @@ function handleGameInit(playerNumber) {
 
   cellContainer.style.display = "grid";
   landingContainer.style.display = "none";
-  lblGameCode.innerText = "Game code: " + inputGameCode.value + ".";
+  const gameCode = document.getElementById("gameCode");
+  gameCode.innerText = inputGameCode.value + ".";
+  gameCode.addEventListener("click", (e) => {
+    if (!navigator.clipboard) {
+      const tempInput = document.createElement("input");
+      tempInput.style.height = "0";
+      tempInput.style.padding = "0";
+      document.body.append(tempInput);
+      tempInput.setAttribute("value", inputGameCode.value);
+      tempInput.select();
+      document.execCommand("copy");
+      tempInput.remove();
+      createMessageDialog("Copied!", "Game code " + inputGameCode.value + " has been copied to the clipboard!");
+    } else {
+      navigator.clipboard
+        .writeText(inputGameCode.value)
+        .then(() => {
+          createMessageDialog("Copied!", "Game code " + inputGameCode.value + " has been copied to the clipboard!");
+        })
+        .catch((err) => {
+          createMessageDialog("Error", "Could not copy to clipboard");
+        });
+    }
+  });
   lblGameCode.style.display = "block";
 
   window.location.hash = "#lets_play";
