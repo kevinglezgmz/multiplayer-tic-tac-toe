@@ -1,8 +1,7 @@
 h1 {
   text-align: center;
-  font-size: 3.5rem;
-  margin-inline-end: 0.35em;
-  margin-inline-start: 0.35em;
+  font-size: 2.8rem;
+  margin: 0 0.38em 0.5em 0.38em;
 }
 
 .infoLabel {
@@ -19,6 +18,7 @@ body {
   background: #dddddd;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .cellContainer {
@@ -55,7 +55,7 @@ body {
 
 .landingContainer {
   width: 700px;
-  margin: 5rem auto;
+  margin: 3rem auto;
 }
 
 .cell {
