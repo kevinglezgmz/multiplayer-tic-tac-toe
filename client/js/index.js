@@ -215,6 +215,10 @@ btnJoinGame.addEventListener("click", (e) => {
   socket.emit("join-game", inputGameCode.value);
 });
 
+inputGameCode.addEventListener("input", (e) => {
+  inputGameCode.value = inputGameCode.value.toUpperCase();
+});
+
 const messagesContainer = document.getElementById("messagesContainer");
 const messagesWrapper = document.getElementById("messagesWrapper");
 
