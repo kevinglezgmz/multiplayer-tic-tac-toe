@@ -35,11 +35,11 @@ function handleGameCode(gameCode) {
 }
 
 function handleUnknownCode() {
-  alert("Unknown code");
+  createMessageDialog("Wrong code", "Invalid code. Please try again.");
 }
 
 function handleTooManyPlayers() {
-  alert("Too many players");
+  createMessageDialog("Game in progress", "Room's full. Create a new game.");
 }
 
 function handleGameInit(playerNumber) {
@@ -93,6 +93,7 @@ function handleGameUpdate(gameState, playerNumber) {
   }
   if (player === playerNumber) {
     lblGameStatus.innerText = "It's your turn. Make a move!";
+    createMessageDialog("Your turn!", "Make a move!.");
   } else {
     lblGameStatus.innerText = "It's your opponent's turn. Please wait!";
   }
@@ -184,6 +185,7 @@ function handleRematchBtn(e) {
 
 function handleRematchRequest() {
   popupContent.innerText = "Your opponent wants to play again. Press rematch to accept.";
+  createMessageDialog("Your opponent wants play again!", "Press rematch to accept.");
   btnRematch.removeEventListener("click", handleRematchBtn);
   btnRematch.addEventListener("click", handleAcceptRematchBtn);
 }
@@ -198,9 +200,9 @@ function handlePlayerDisconnect() {
     disconnectPopup.setAttribute("data-target", "true");
   } else if (gameStatus === "ended") {
     gameEndPopup.setAttribute("data-target", "true");
-    popupContent.innerText += " - Your opponent left, please go home.";
     btnRematch.setAttribute("disabled", "true");
     btnRematch.innerText = "Rematch not available";
+    createMessageDialog("Player left", "Woops! Your opponent left, please go home.");
   }
 }
 
@@ -212,3 +214,36 @@ btnCreateGame.addEventListener("click", (e) => {
 btnJoinGame.addEventListener("click", (e) => {
   socket.emit("join-game", inputGameCode.value);
 });
+
+const messagesContainer = document.getElementById("messagesContainer");
+const messagesWrapper = document.getElementById("messagesWrapper");
+
+function createMessageDialog(titleText, messageText) {
+  const newMessage = document.createElement("div");
+  newMessage.classList.add("message");
+  const title = document.createElement("h3");
+  title.innerText = titleText;
+  const messageContent = document.createElement("div");
+  messageContent.classList.add("content");
+  messageContent.innerText = messageText;
+  newMessage.appendChild(title);
+  newMessage.appendChild(messageContent);
+  newMessage.addEventListener("click", (ev) => {
+    destroyMessageDialog(newMessage, 0);
+  });
+  messagesContainer.appendChild(newMessage);
+  setTimeout(() => {
+    newMessage.setAttribute("data-hidden", "false");
+  }, 0);
+  messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
+  destroyMessageDialog(newMessage, 3500);
+}
+
+function destroyMessageDialog(messageElement, delay) {
+  setTimeout(() => {
+    messageElement.setAttribute("data-hidden", "true");
+    setTimeout(() => {
+      messageElement.remove();
+    }, 550);
+  }, delay);
+}
