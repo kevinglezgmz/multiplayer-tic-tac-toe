@@ -90,8 +90,9 @@ io.on("connection", (socket) => {
     const gameState = globalState[roomName];
     gameState.cells[clickedCellIndex] = gameState.nextVal;
     gameState.nextVal = gameState.nextVal === "X" ? "O" : "X";
-    io.to(roomName).emit("game-update", JSON.stringify(gameState), gameState.nextVal === "X" ? 1 : 2);
+    const nextPlayerTurn = gameState.nextVal === "X" ? 1 : 2;
     const { winner, winningLine } = hasPlayerWon(gameState);
+    io.to(roomName).emit("game-update", JSON.stringify(gameState), winner ? 3 : nextPlayerTurn);
     if (winner) {
       io.to(roomName).emit("game-end", winner, winningLine);
     }
