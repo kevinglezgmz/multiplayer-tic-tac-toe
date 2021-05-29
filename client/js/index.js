@@ -117,6 +117,8 @@ function handleGameUpdate(gameState, playerNumber) {
   if (player === playerNumber) {
     lblGameStatus.innerText = "It's your turn. Make a move!";
     createMessageDialog("Your turn!", "Make a move!.");
+  } else if (playerNumber === 3) {
+    lblGameStatus.innerText = "Game over!";
   } else {
     lblGameStatus.innerText = "It's your opponent's turn. Please wait!";
   }
