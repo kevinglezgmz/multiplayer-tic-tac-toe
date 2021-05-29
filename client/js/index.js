@@ -238,6 +238,12 @@ btnJoinGame.addEventListener("click", (e) => {
   socket.emit("join-game", inputGameCode.value);
 });
 
+inputGameCode.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    socket.emit("join-game", inputGameCode.value);
+  }
+});
+
 inputGameCode.addEventListener("input", (e) => {
   inputGameCode.value = inputGameCode.value.toUpperCase();
 });
