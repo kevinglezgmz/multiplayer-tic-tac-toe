@@ -175,9 +175,11 @@ function handleGameEnd(winner, winningLine) {
     winningBar.classList.add("winningBarAnimation");
   }
 
-  btnRematch.style.display = "block";
-  btnRematch.addEventListener("click", handleRematchBtn);
-  openPopup();
+  setTimeout(() => {
+    btnRematch.style.display = "block";
+    btnRematch.addEventListener("click", handleRematchBtn);
+    openPopup();
+  }, 1000);
 }
 
 function getDisplacementFactor(winningLine) {
