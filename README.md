@@ -16,20 +16,25 @@ I have built other sites using bootstrap, but using this framework sometimes lim
 
 #### These are some of the things i learned while building the game:
 
-- Making a minimalistic and straight-foward home menu for the game. 
-![Home menu](https://i.ibb.co/KNk317p/Captura-de-pantalla-2021-05-29-150416.png "Home menu")
+- Making a minimalistic and straight-foward home menu for the game.
 
-- Designing and animating popup messages for the user. 
-![Popups](https://i.ibb.co/1nmT59B/popup-messages.png "Popup messages")
+  ![Home menu](https://i.ibb.co/KNk317p/Captura-de-pantalla-2021-05-29-150416.png "Home menu")
+
+- Designing and animating popup messages for the user.
+
+  ![Popups](https://i.ibb.co/1nmT59B/popup-messages.png "Popup messages")
 
 - Creating a 3x3 grid with animations for both new movements and winning lines using CSS.
-![3x3 grid](https://i.ibb.co/rGRHCMH/grid.png "Game grid")
+
+  ![3x3 grid](https://i.ibb.co/rGRHCMH/grid.png "Game grid")
 
 - Designing and animating a tooltip.
-![Tooltips](https://i.ibb.co/MS03vSQ/tooltip.png "Tooltips")
+
+  ![Tooltips](https://i.ibb.co/MS03vSQ/tooltip.png "Tooltips")
 
 - Designing and animating an overlay/modal for the end of the game.
-![Overlay](https://i.ibb.co/J5yJM5X/overlay.png "Overlay")
+
+  ![Overlay](https://i.ibb.co/J5yJM5X/overlay.png "Overlay")
 
 ### It helped me to grow as a developer
 
